@@ -1,0 +1,15 @@
+{
+  "name": "final_project2020",
+  "version": "1.0.0",
+  "description": "G00376658",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Milosz Milewski",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mysql": "^2.18.1"
+  }
+}
