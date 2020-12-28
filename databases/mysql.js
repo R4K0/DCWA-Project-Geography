@@ -1,18 +1,15 @@
 var mysql = require(`mysql`);
 var config = require(`../configs/mysql.json`)
+var express = require(`express`);
 
-var connection = mysql.createConnection({
-    host: `${config.host}:${config.port}`,
+var connection = mysql.createPool({
+    host: config.host,
+    port: config.port,
     user: config.user,
-    password: config.password
-})
+    password: config.password,
+    database: `world`,
 
-connection.connect((err) => {
-    if (err) {
-        console.log(err);
-    }
-
-    console.log(`Connected to the MySQL database!`);
+    connectionLimit: 6
 })
 
 // Gracefully shut down the connection
@@ -23,4 +20,6 @@ process.on(`SIGTERM`, () => {
         connection.end()
 })
 
-exports = mysql;
+module.exports = {
+    pool: connection
+}
