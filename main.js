@@ -59,14 +59,14 @@ app.get(`/languages/:country`, async (req, res) => {
     var languages;
     var country;
 
-    try{
+    try {
         country = await getCountryByCode(req.params.country);
         languages = await getLanguagesInCountry(req.params.country);
-    } catch(err) {
+    } catch (err) {
         res.status(500).send(err);
     }
 
-    if( languages == false || country == false ){
+    if (languages == false || country == false) {
         res.send("No country to list")
         return;
     }
@@ -76,8 +76,47 @@ app.get(`/languages/:country`, async (req, res) => {
     res.render('./languages.ejs', { languages: languages, countryName: country[0].Name })
 })
 
-app.get('/cities/:country', (req, res) => {
-    res.render('./cities.ejs');
+function getCitiesByCountry(countryCode) {
+    return new Promise((resolve, reject) => {
+        if (!countryCode) {
+            reject(new Error("No country code provided!"))
+            return;
+        }
+
+        pool.query("SELECT city.Population, city.Name as CityName, country.Name as CountryName FROM city LEFT JOIN country ON country.Code = city.CountryCode WHERE CountryCode = ?", countryCode.toUpperCase(), function (err, results) {
+            if (err) {
+                reject(err);
+                return;
+            }
+
+            resolve(results)
+        })
+    })
+}
+
+function getAllCities() {
+    return new Promise((resolve, reject) => {
+        pool.query("SELECT * from city", function(err, data) {
+            if (err){
+                reject(err);
+                return;
+            }
+
+            resolve(data)
+        })
+    })
+}
+
+app.get('/cities/all', async (req, res) => {
+    var cities = await getAllCities()
+
+    res.render(`./cities_all.ejs`, {cities: cities});
+})
+
+app.get('/cities/:country', async (req, res) => {
+    const cities = await getCitiesByCountry(req.params.country);
+
+    res.render('./cities.ejs', { cities: cities });
 })
 
 app.get(`/countries/list`, async (req, res) => {

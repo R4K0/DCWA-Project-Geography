@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 
 <head>
-    <script src="https://cdn.jsdelivr.net/npm/pluralize@8.0.0/pluralize.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/randomcolor/0.6.1/randomColor.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"
@@ -19,7 +18,7 @@
             <p class="lead">Main languages:
                 <%= languages.filter( language => language.IsOfficial == "T" ).map( language => language.Language ).join(", ") %>
             </p>
-        
+
         </div>
         <br>
 
@@ -49,7 +48,8 @@
 
         <br>
         <div class="row text-center">
-            <small>Any statistics inaccuracies are due to the dataset that has been provided for me to work with.</small>
+            <small>Any statistics inaccuracies are due to the dataset that has been provided for me to work
+                with.</small>
             <small>Silly goofiness can happen, like percentages not summing up to 100% or straight out missing.</small>
             <small>Do not quote this website as a source.</small>
         </div>
@@ -79,8 +79,6 @@
 
             }
         })
-
-
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"

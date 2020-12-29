@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+
+    <title>List all cities</title>
+</head>
+
+<body style="margin: 1rem;">
+    <div class="container">
+        <div>
+            <h1 class="display-6">List of all the cities in the world</h1>
+            <p class="lead">There are <%= cities.length %>  cities in the whole world!</p>
+        </div>
+
+        <table class="table table-striped table-bordered table-sm">
+            <thead>
+                <tr>
+                    <th>Country</th>
+                    <th>Name</th>
+                    <th>District</th>
+                    <th>Population</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+
+            <% cities.forEach(city => { %>
+                <tr>
+                    <td><%= city.CountryCode %></td>
+                    <td><%= city.Name %></td>
+                    <td><%= city.District %></td>
+                    <td><%= city.Population %></td>
+                    <td class="align-middle">
+                        <div class="dropdown">
+                            <a class="btn btn-sm btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                More
+                            </a>
+    
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                <li><a class="dropdown-item" href="/cities/<%= city.CountryCode %>">Show only <%= city.CountryCode %> cities.</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            <% }) %>
+        </table>
+    </div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"
+        integrity="sha384-q2kxQ16AaE6UbzuKqyBE9/u/KzioAlnx2maXQHiDX9d4/zp8Ok3f+M7DPm+Ib6IU"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js"
+        integrity="sha384-pQQkAEnwaBkjpqZ8RU1fF1AKtTcHJwFl3pblpTlHXybJjHpMYo79HY3hIi4NKxyj"
+        crossorigin="anonymous"></script>
+</body>
