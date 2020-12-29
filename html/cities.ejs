@@ -15,7 +15,8 @@
     <span id="json" hidden><%= JSON.stringify(cities) %> </span>
 
     <div class="container">
-        <h1 class="display-2">Cities of <%= cities[0] ? cities[0].CountryName : "... an empty place, apparently :(" %></h1>
+        <h1 class="display-2">Cities of <%= cities[0] ? cities[0].CountryName : "... an empty place, apparently :(" %>
+        </h1>
         <p class="lead">There are <%= cities.length || 0 %> cities in this Country!</p>
 
         <h1 class="display-6 text-center">Population Statistics</h1>
