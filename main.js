@@ -76,6 +76,10 @@ app.get(`/languages/:country`, async (req, res) => {
     res.render('./languages.ejs', { languages: languages, countryName: country[0].Name })
 })
 
+app.get('/cities/:country', (req, res) => {
+    res.render('./cities.ejs');
+})
+
 app.get(`/countries/list`, async (req, res) => {
     //TODO: Catch errors and handle them
     const countries = await getCountriesAll()
