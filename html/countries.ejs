@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 
 <head>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 
@@ -13,6 +15,39 @@
         <a class="btn btn-primary" href="/">Go Back</a>
         <h1>List of Countries</h1>
         <h4>There are <%- countries.length %> countries in the database</h4>
+
+        <script>
+            function onSubmit() {
+                $.ajax({
+                    method: "POST",
+                    url: "/countries",
+                    data: $("#form-create").serialize(),
+                    success: () => { location.reload() }
+                })
+            }
+        </script>
+
+        <form class="mb-2" id="form-create" onsubmit="onSubmit(); return false">
+            <div class="form-group">
+                <label>Country Code</label>
+                <input required type="text" class="form-control" name="co_code" />
+            </div>
+
+            <div class="form-group">
+                <label>Country Name</label>
+                <input required type="text" class="form-control" name="co_name" />
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea class="form-control" name="detail">
+
+                </textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-2">Create New</button>
+            <button type="reset" class="btn btn-danger mt-2">Reset</button>
+        </form>
 
         <table style="width: 100%;" class="table table-striped table-sm table-bordered">
             <caption>List of Countries</caption>

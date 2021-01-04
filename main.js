@@ -1,4 +1,5 @@
-const { getAllCities, getCitiesByCountry, getCountriesAll, getCountryByCode, removeCity, getCountryCodes, addCity } = require(`./databases/mysql`);
+const { getAllCities, getCitiesByCountry, getCountriesAll, getCountryByCode, removeCity, getCountryCodes, addCity, addCountry } = require(`./databases/mysql`);
+const { HeadSchema } = require("./databases/mongo")
 var express = require("express");
 var path = require(`path`)
 var cors = require(`cors`)
@@ -28,10 +29,20 @@ app.post("/cities/delete", async (req, res) => {
 })
 
 app.post("/cities", async (req, res) => {
-    console.log(req.body);
-
     try {
         var rows = await addCity(req.body.cty_code, req.body.co_name, req.body.cty_name, req.body.population, req.body.coast, req.body.area);
+
+        res.status(200).json({
+            rowsAffected: rows.affectedRows
+        });
+    } catch (error) {
+        res.status(400).send(error.sqlMessage)
+    }
+})
+
+app.post("/countries", async (req, res) => {
+    try {
+        var rows = await addCountry(req.body.co_code, req.body.co_name, req.body.detail);
 
         res.status(200).json({
             rowsAffected: rows.affectedRows
@@ -69,6 +80,12 @@ app.get('/countries/all', async (req, res) => {
     } catch (err) {
         res.status(500).send(err.sqlMessage || "Error")
     }
+})
+
+app.get('/heads/all', async (req, res) => {
+    var heads = HeadSchema
+
+    res.render("./heads.ejs")
 })
 
 

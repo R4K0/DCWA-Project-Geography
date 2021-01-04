@@ -117,6 +117,19 @@ function addCity(cty_code, co_code, cty_name, population, coastal, areaKM){
     })
 }
 
+function addCountry(co_code, co_name, details){
+    return new Promise((resolve, reject) => {
+        pool.query("INSERT INTO country VALUES(?, ?, ?)", [co_code, co_name, details], function (err, results, fields) {
+            if (err) {
+                reject(err);
+                return;
+            }
+
+            resolve(results);
+        })
+    })
+}
+
 
 module.exports = {
     getCountryByCode,
@@ -125,5 +138,6 @@ module.exports = {
     removeCity,
     getAllCities,
     getCountryCodes,
-    addCity
+    addCity,
+    addCountry
 }
