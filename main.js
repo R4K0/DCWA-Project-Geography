@@ -1,116 +1,51 @@
-const { pool } = require(`./databases/mysql`);
+const { getAllCities, getCitiesByCountry, getCountriesAll, getCountryByCode, removeCity, getCountryCodes, addCity } = require(`./databases/mysql`);
 var express = require("express");
 var path = require(`path`)
 var cors = require(`cors`)
+var bodyparser = require(`body-parser`)
 
 var app = express()
 
 app.use(express.static('public'))
 
+app.use(bodyparser.json())
+app.use(bodyparser.urlencoded({ extended: true }))
 app.use(cors())
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, '/html'))
 
-function getCountriesAll() {
-    return new Promise((resolve, reject) => {
-        pool.query("SELECT *, country.Name as CountryName, city.Name as CapitalName FROM country LEFT JOIN city ON country.Capital = city.ID", function (err, results, fields) {
-            if (err) {
-                reject(err);
-                return;
-            }
 
-            resolve(results);
-        })
-    })
-}
-
-function getCountryByCode(countryCode) {
-    return new Promise((resolve, reject) => {
-        pool.query("SELECT *, country.Name as CountryName, city.Name as CapitalName FROM country LEFT JOIN city ON country.Capital = city.ID WHERE Code = ?", countryCode.toUpperCase(), function (err, results, fields) {
-            if (err) {
-                reject(err);
-                return;
-            }
-
-            resolve(results);
-        })
-    })
-}
-
-function getLanguagesInCountry(countryCode) {
-    return new Promise((resolve, reject) => {
-        if (!countryCode) {
-            reject(new Error("No country code provided!"))
-            return;
-        }
-
-        pool.query("SELECT * FROM countrylanguage WHERE CountryCode = ?", countryCode.toUpperCase(), function (err, results) {
-            if (err) {
-                reject(err);
-                return;
-            }
-
-            resolve(results)
-        })
-    })
-}
-
-app.get(`/languages/:country`, async (req, res) => {
-    var languages;
-    var country;
-
-    try {
-        country = await getCountryByCode(req.params.country);
-        languages = await getLanguagesInCountry(req.params.country);
-    } catch (err) {
-        res.status(500).send(err);
-    }
-
-    if (languages == false || country == false) {
-        res.send("No country to list")
-        return;
-    }
-
-    console.log(country);
-
-    res.render('./languages.ejs', { languages: languages, countryName: country[0].Name })
+app.get(`/`, (req, res) => {
+    res.render('./home.ejs')
 })
 
-function getCitiesByCountry(countryCode) {
-    return new Promise((resolve, reject) => {
-        if (!countryCode) {
-            reject(new Error("No country code provided!"))
-            return;
-        }
+app.post("/cities/delete", async (req, res) => {
+    var rows = await removeCity(req.body.ID)
 
-        pool.query("SELECT city.Population, city.Name as CityName, country.Name as CountryName FROM city LEFT JOIN country ON country.Code = city.CountryCode WHERE CountryCode = ?", countryCode.toUpperCase(), function (err, results) {
-            if (err) {
-                reject(err);
-                return;
-            }
+    res.status(200).json({
+        rowsAffected: rows.affectedRows
+    });
+})
 
-            resolve(results)
-        })
-    })
-}
+app.post("/cities", async (req, res) => {
+    console.log(req.body);
 
-function getAllCities() {
-    return new Promise((resolve, reject) => {
-        pool.query("SELECT * from city", function(err, data) {
-            if (err){
-                reject(err);
-                return;
-            }
+    try {
+        var rows = await addCity(req.body.cty_code, req.body.co_name, req.body.cty_name, req.body.population, req.body.coast, req.body.area);
 
-            resolve(data)
-        })
-    })
-}
+        res.status(200).json({
+            rowsAffected: rows.affectedRows
+        });
+    } catch (error) {
+        res.status(400).send(error.sqlMessage)
+    }
+})
 
 app.get('/cities/all', async (req, res) => {
     var cities = await getAllCities()
+    var country_codes = await getCountryCodes()
 
-    res.render(`./cities_all.ejs`, {cities: cities});
+    res.render(`./cities_all.ejs`, { cities: cities, codes: country_codes });
 })
 
 app.get('/cities/:country', async (req, res) => {

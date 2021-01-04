@@ -8,19 +8,9 @@
 </head>
 
 <body>
-
     <link href="/flags/css/flag-css.css" rel="stylesheet">
-
-    <script>
-        $(document).ready(() => {
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl)
-            })
-        })
-    </script>
-
     <div class="container" style="margin-top: 2rem;">
+        <a class="btn btn-primary" href="/">Go Back</a>
         <h1>List of Countries</h1>
         <h4>There are <%- countries.length %> countries in the database</h4>
 
@@ -30,12 +20,7 @@
                 <tr>
                     <th scope="col">Code</th>
                     <th>Name</th>
-                    <th>Continent</th>
-                    <th>Region</th>
-                    <th>Surface Area</th>
-                    <th>Independence Year</th>
-                    <th>Population</th>
-                    <th>Life Expectancy</th>
+                    <th>Description</th>
 
                     <th>Actions</th>
 
@@ -45,23 +30,14 @@
             <% countries.forEach(country => { %>
             <tr>
                 <td>
-                    <span class="flag flag-<%= country.Code.toLowerCase() %> ">
+                    <span class="flag flag-<%= country.co_code.toLowerCase() %> ">
                     </span>
-                    <%= country.Code %>
+                    <%= country.co_code %>
                 </td>
                 <td>
-                    <%=country.CountryName%>
-                    <% if (country.CapitalName) { %>
-                    <span data-bs-toggle="tooltip" data-bs-placement="top" title="Capital" class="badge bg-primary">
-                        <%= country.CapitalName %> </span>
-                    <% } %>
+                    <%=country.co_name%>
                 </td>
-                <td><%=country.Continent%></td>
-                <td><%=country.Region%></td>
-                <td><%=country.SurfaceArea%> km<sup>2</sup></td>
-                <td><%=country.IndepYear || "N/A"%></td>
-                <td><%=country.Population %></td>
-                <td><%=country.LifeExpectancy || "N/A" %></td>
+                <td><%=country.co_details%></td>
 
                 <td class="align-middle">
                     <div class="dropdown">
@@ -71,8 +47,7 @@
                         </a>
 
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <li><a class="dropdown-item" href="/languages/<%= country.Code %>">Languages</a></li>
-                            <li><a class="dropdown-item" href="/cities/<%= country.Code %>">Cities</a></li>
+                            <li><a class="dropdown-item" href="/cities/<%= country.co_code %>">Cities</a></li>
                         </ul>
                     </div>
                 </td>

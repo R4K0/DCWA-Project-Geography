@@ -12,10 +12,11 @@
 </head>
 
 <body>
+    <!-- A hack, I can't embed EJS variables in a <script> tag, so I embed it in here and hide the element. Later, I get the element, parse the string, and delete it. -->
     <span id="json" hidden><%= JSON.stringify(cities) %> </span>
 
     <div class="container">
-        <h1 class="display-2">Cities of <%= cities[0] ? cities[0].CountryName : "... an empty place, apparently :(" %>
+        <h1 class="display-2">Cities of <%= cities[0] ? cities[0].co_name : "... an empty place, apparently :(" %>
         </h1>
         <p class="lead">There are <%= cities.length || 0 %> cities in this Country!</p>
 
@@ -34,13 +35,13 @@
         <br>
         <div class="row">
             <div class="col">
-                <p>The biggest city, <%= cities[0].CityName %>, is approximately
-                    <%= `${ Math.round( cities[0].Population / cities[cities.length-1].Population ) } times bigger than the smallest city, ${cities[cities.length-1].CityName}` %>
+                <p>The biggest city, <%= cities[0].cty_name %>, is approximately
+                    <%= `${ Math.round( cities[0].population / cities[cities.length-1].population ) } times bigger than the smallest city, ${cities[cities.length-1].cty_name}` %>
                 </p>
             </div>
 
             <div class="col">
-                <%= `${cities.reduce( function( a, b ) { return a.CityName.length > b.CityName.length ? a : b } ).CityName} is the longest city name in this country, on the other hand, ${cities.reduce( function( a, b ) { return a.CityName.length < b.CityName.length ? a : b } ).CityName} is the shortest` %>
+                <%= `${cities.reduce( function( a, b ) { return a.cty_name.length > b.cty_name.length ? a : b } ).cty_name} is the longest city name in this country, on the other hand, ${cities.reduce( function( a, b ) { return a.cty_name.length < b.cty_name.length ? a : b } ).cty_name} is the shortest` %>
             </div>
             <br>
         </div>
@@ -62,8 +63,8 @@
 
                     <% cities.forEach(city => { %>
                     <tr>
-                        <td> <%= city.CityName %> </td>
-                        <td> <%= city.Population %> </td>
+                        <td> <%= city.cty_name %> </td>
+                        <td> <%= city.population %> </td>
                     </tr>
                     <% }) %>
                 </table>
@@ -81,7 +82,7 @@
             type: 'bar',
             data: {
                 datasets: [{
-                    data: cities.map(city => city.Population),
+                    data: cities.map(city => city.population),
                     backgroundColor: randomColor({
                         count: cities.length
                     }),
@@ -89,7 +90,7 @@
                     label: ''
                 }],
 
-                labels: cities.map(city => city.CityName)
+                labels: cities.map(city => city.cty_name)
 
             }
         })
