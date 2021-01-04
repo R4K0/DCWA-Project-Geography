@@ -16,13 +16,23 @@
         <h1>List of Countries</h1>
         <h4>There are <%- countries.length %> countries in the database</h4>
 
+        <div class="alert alert-danger" role="alert" style="display: none;" id="error">
+            Example alert
+        </div>
+
         <script>
             function onSubmit() {
                 $.ajax({
                     method: "POST",
                     url: "/countries",
                     data: $("#form-create").serialize(),
-                    success: () => { location.reload() }
+                    success: () => { location.reload() },
+                    error: (err) => {
+                        console.log(err);
+
+                        $("#error").text(err.responseText || "An error occured!")
+                        $("#error").fadeIn()
+                    }
                 })
             }
         </script>

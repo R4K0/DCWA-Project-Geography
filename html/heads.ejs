@@ -9,14 +9,70 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"
         integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">    
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 </head>
 
 <body>
 
 </body>
-    <div class="container" style="margin-top: 2rem;">
-        <a class="btn btn-primary" href="/">Go Back</a>
-        <h1>List of Heads of States</h1>
+<div class="container" style="margin-top: 2rem;">
+    <a class="btn btn-primary" href="/">Go Back</a>
+    <h1>List of Heads of States</h1>
+
+    <script>
+        function onSubmit() {
+            $.ajax({
+                method: "POST",
+                url: "/heads",
+                data: $("#form-create").serialize(),
+                success: () => { location.reload() },
+                error: (err) => {
+                    $("#error").text(err.responseText || "An error occured!")
+                    $("#error").fadeIn()
+                }
+            })
+        }
+    </script>
+
+    <div class="alert alert-danger" role="alert" style="display: none;" id="error">
+        Example alert
     </div>
+
+
+    <form class="mb-3" id="form-create" onsubmit="onSubmit(); return false">
+        <div class="form-group">
+            <label>Head Name</label>
+            <input required type="text" class="form-control" name="head_name" />
+        </div>
+
+        <div>
+            <label>Belonging to Country</label>
+            <select class="form-control" name="co_code">
+                <% codes.forEach(country => { %>
+                <option value="<%= country.co_code %>"><%= country.co_name %></option>
+                <% }) %>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-2">Create New</button>
+        <button type="reset" class="btn btn-danger mt-2">Reset</button>
+    </form>
+
+    <table class="table table-striped table-bordered">
+        <thead>
+            <th>Country</th>
+            <th>Head</th>
+        </thead>
+
+        <tbody>
+            <% heads.forEach(head => { %>
+            <tr>
+                <td><%= head._id %></td>
+                <td><%= head.headOfState %></td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</div>
+
 </html>

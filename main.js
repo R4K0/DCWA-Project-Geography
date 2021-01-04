@@ -1,5 +1,5 @@
 const { getAllCities, getCitiesByCountry, getCountriesAll, getCountryByCode, removeCity, getCountryCodes, addCity, addCountry } = require(`./databases/mysql`);
-const { HeadSchema } = require("./databases/mongo")
+const { HeadSchema, HeadModel } = require("./databases/mongo")
 var express = require("express");
 var path = require(`path`)
 var cors = require(`cors`)
@@ -21,11 +21,15 @@ app.get(`/`, (req, res) => {
 })
 
 app.post("/cities/delete", async (req, res) => {
-    var rows = await removeCity(req.body.ID)
+    try {
+        var rows = await removeCity(req.body.ID)
 
-    res.status(200).json({
-        rowsAffected: rows.affectedRows
-    });
+        res.status(200).json({
+            rowsAffected: rows.affectedRows
+        });
+    } catch (error) {
+        res.sendStatus(400);
+    }
 })
 
 app.post("/cities", async (req, res) => {
@@ -53,23 +57,34 @@ app.post("/countries", async (req, res) => {
 })
 
 app.get('/cities/all', async (req, res) => {
-    var cities = await getAllCities()
-    var country_codes = await getCountryCodes()
+    try {
+        var cities = await getAllCities()
+        var country_codes = await getCountryCodes()
 
-    res.render(`./cities_all.ejs`, { cities: cities, codes: country_codes });
+        res.render(`./cities_all.ejs`, { cities: cities, codes: country_codes });
+    } catch (error) {
+        res.sendStatus(500)
+    }
 })
 
 app.get('/cities/:country', async (req, res) => {
-    const cities = await getCitiesByCountry(req.params.country);
+    try {
+        const cities = await getCitiesByCountry(req.params.country);
 
-    res.render('./cities.ejs', { cities: cities });
+        res.render('./cities.ejs', { cities: cities });
+    } catch (error) {
+        res.sendStatus(500)
+    }
 })
 
 app.get(`/countries/list`, async (req, res) => {
-    //TODO: Catch errors and handle them
-    const countries = await getCountriesAll()
+    try {
+        const countries = await getCountriesAll()
 
-    res.render(`./countries.ejs`, { countries: countries })
+        res.render(`./countries.ejs`, { countries: countries })
+    } catch (error) {
+        res.sendStatus(400)
+    }
 })
 
 app.get('/countries/all', async (req, res) => {
@@ -83,11 +98,26 @@ app.get('/countries/all', async (req, res) => {
 })
 
 app.get('/heads/all', async (req, res) => {
-    var heads = HeadSchema
+    try {
+        var heads = await HeadModel.find();
+        var codes = await getCountryCodes()
 
-    res.render("./heads.ejs")
+        res.render("./heads.ejs", { heads: heads, codes: codes })
+    } catch (error) {
+        res.sendStatus(400)
+    }
+
 })
 
+app.post("/heads", async (req, res) => {
+    try {
+        await HeadModel.findOneAndUpdate({ _id: req.body.co_code }, { _id: req.body.co_code, headOfState: req.body.head_name }, { upsert: true, new: true })
+
+        res.sendStatus(200);
+    } catch (error) {
+        res.sendStatus(400);
+    }
+})
 
 app.listen(3000, () => {
     console.log(`Listening on port 3000`);

@@ -23,10 +23,18 @@
                     method: "POST",
                     url: "/cities",
                     data: $("#form-create").serialize(),
-                    success: () => { location.reload() }
+                    success: () => { location.reload() },
+                    error: (err) => {
+                        $("#error").text(err.responseText || "An error occured!")
+                        $("#error").fadeIn()
+                    }
                 })
             }
         </script>
+
+        <div class="alert alert-danger" role="alert" style="display: none;" id="error">
+            Example alert
+        </div>
 
         <form class="mb-3" id="form-create" onsubmit="onSubmit(); return false">
             <div class="form-group">
